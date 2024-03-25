@@ -5,6 +5,8 @@ import com.mojang.datafixers.util.Pair;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.List;
 
 public abstract class EquipmentPacketProcessor {
     protected abstract void process(PacketEvent event);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EquipmentPacketProcessor.class);
 
     /**
      * Re-sends the PacketPlayOutEntityEquipment packet to all players, for this particular player
@@ -20,7 +23,7 @@ public abstract class EquipmentPacketProcessor {
     @SneakyThrows
     public static void refreshEquipmentOfPlayerForAllPlayers(Player player) {
         List<Pair<Object, Object>> equipmentPairList = new ArrayList<>();
-        Constructor<?> packetConstructor = NMSHelper.getNMSClass("PacketPlayOutEntityEquipment")
+        Constructor<?> packetConstructor = NMSHelper.getPacketPlayoutEntityEquipment()
                 .getDeclaredConstructor(int.class, List.class);
 
         for (ItemSlotConverter slotConverter : ItemSlotConverter.values()) {
@@ -34,8 +37,12 @@ public abstract class EquipmentPacketProcessor {
 
         Bukkit.getOnlinePlayers().forEach(online -> {
             if (online.equals(player)) return;
+            Bukkit.getLogger().info("packet: " + packet);
             NMSHelper.sendPacket(online, packet);
+            LOGGER.info("Equipment of player {} has been sent to {}", player.getName(), online.getName());
         });
+
+
     }
 
     public static void refreshEquipmentOfAllPlayers() {
@@ -43,6 +50,7 @@ public abstract class EquipmentPacketProcessor {
     }
 
     public void onEnable() {
+        Bukkit.getLogger().info("Equipment packet processor enabled.");
         refreshEquipmentOfAllPlayers();
     }
 

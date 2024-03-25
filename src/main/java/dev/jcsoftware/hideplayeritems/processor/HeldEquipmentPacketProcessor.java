@@ -5,6 +5,8 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.mojang.datafixers.util.Pair;
 import dev.jcsoftware.hideplayeritems.EquipmentPacketProcessor;
 import dev.jcsoftware.hideplayeritems.NMSHelper;
+import net.minecraft.world.entity.EnumItemSlot;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,20 +21,16 @@ public class HeldEquipmentPacketProcessor extends EquipmentPacketProcessor {
     private Object offhandSlotEnum = null;
 
     public HeldEquipmentPacketProcessor() {
-        try {
-            Class<?> clazz = NMSHelper.getNMSClass("EnumItemSlot");
-            handSlotEnum = clazz.getField("MAINHAND").get(null);
-            offhandSlotEnum = clazz.getField("OFFHAND").get(null);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-        }
+        handSlotEnum = EnumItemSlot.a("mainhand");
+        offhandSlotEnum = EnumItemSlot.a("offhand");
     }
 
     public void process(PacketEvent event) {
         Object rawPacket = event.getPacket().getHandle();
 
         try {
-            Field pairField = rawPacket.getClass().getDeclaredField("b");
+            Bukkit.getLogger().info(("Packet: " + rawPacket.getClass().getName()));
+            Field pairField = rawPacket.getClass().getDeclaredField("c");
             pairField.setAccessible(true);
 
             List<Pair<Object, Object>> newPairList = new ArrayList<>();

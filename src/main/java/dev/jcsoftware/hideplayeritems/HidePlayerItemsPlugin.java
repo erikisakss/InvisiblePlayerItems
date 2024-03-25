@@ -6,6 +6,7 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import dev.jcsoftware.hideplayeritems.processor.AllEquipmentPacketProcessor;
 import dev.jcsoftware.hideplayeritems.processor.HeldEquipmentPacketProcessor;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,6 +26,7 @@ public class HidePlayerItemsPlugin extends JavaPlugin {
                 .addPacketListener(new PacketAdapter(this, PacketType.Play.Server.ENTITY_EQUIPMENT) {
             @Override
             public void onPacketSending(PacketEvent event) {
+                Bukkit.getLogger().info((event.getPacket().getHandle()).getClass().getName() + "caught by listener");
                 if (equipmentPacketProcessor == null) return;
                 equipmentPacketProcessor.process(event);
             }

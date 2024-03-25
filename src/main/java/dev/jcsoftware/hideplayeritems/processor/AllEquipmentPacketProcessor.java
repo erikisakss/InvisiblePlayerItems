@@ -17,7 +17,7 @@ public class AllEquipmentPacketProcessor extends EquipmentPacketProcessor {
         Object rawPacket = event.getPacket().getHandle();
 
         try {
-            Field pairField = rawPacket.getClass().getDeclaredField("b");
+            Field pairField = rawPacket.getClass().getDeclaredField("c");
             pairField.setAccessible(true);
 
             List<Pair<Object, Object>> newPairList = new ArrayList<>();

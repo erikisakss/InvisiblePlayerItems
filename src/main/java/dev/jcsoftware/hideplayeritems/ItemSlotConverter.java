@@ -1,6 +1,7 @@
 package dev.jcsoftware.hideplayeritems;
 
 import lombok.SneakyThrows;
+import net.minecraft.world.entity.EnumItemSlot;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -32,6 +33,6 @@ public enum ItemSlotConverter {
 
     @SneakyThrows
     public Object toNMSEnum() {
-        return NMSHelper.getNMSClass("EnumItemSlot").getField(name()).get(null);
+        return EnumItemSlot.a(this.name().toLowerCase());
     }
 }

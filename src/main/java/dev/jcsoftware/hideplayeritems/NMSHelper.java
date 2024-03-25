@@ -1,6 +1,8 @@
 package dev.jcsoftware.hideplayeritems;
 
 import lombok.SneakyThrows;
+import net.minecraft.world.entity.EnumItemSlot;
+import net.minecraft.world.entity.EquipmentSlot;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,9 +14,9 @@ public class NMSHelper {
     @SneakyThrows
     public static void sendPacket(Player player, Object packet) {
         Object handle = getHandle(player);
-        Object playerConnection = handle.getClass().getField("playerConnection").get(handle);
+        Object playerConnection = handle.getClass().getField("c").get(handle);
 
-        playerConnection.getClass().getMethod("sendPacket", getNMSClass("Packet")).invoke(playerConnection, packet);
+        playerConnection.getClass().getMethod("a", getNMSClass("Packet")).invoke(playerConnection, packet);
     }
 
     @SneakyThrows
@@ -24,7 +26,20 @@ public class NMSHelper {
 
     @SneakyThrows
     public static Class<?> getNMSClass(String name) {
-        return Class.forName("net.minecraft.server." + getVersion() + "." + name);
+        return Class.forName("net.minecraft.network.protocol." + name);
+    }
+    @SneakyThrows
+    public static Class<?> getEquipmentSlotClass() {
+
+
+
+        return net.minecraft.world.entity.EnumItemSlot.class;
+    }
+
+
+    @SneakyThrows
+    public static Class<?> getPacketPlayoutEntityEquipment() {
+        return net.minecraft.network.protocol.game.PacketPlayOutEntityEquipment.class;
     }
 
     @SneakyThrows
